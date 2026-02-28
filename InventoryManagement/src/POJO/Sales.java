@@ -8,8 +8,36 @@ public class Sales {
     private Timestamp saleDate;
     private String customerName;
     private double totalAmount;
+    
+    
 
-    public int getSaleId() {
+    public Sales() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+
+	public Sales(Timestamp saleDate, String customerName, double totalAmount) {
+		super();
+		this.saleDate = saleDate;
+		this.customerName = customerName;
+		this.totalAmount = totalAmount;
+	}
+    
+    
+
+	public Sales(int saleId, Timestamp saleDate, String customerName, double totalAmount) {
+		super();
+		this.saleId = saleId;
+		this.saleDate = saleDate;
+		this.customerName = customerName;
+		this.totalAmount = totalAmount;
+	}
+
+
+
+	public int getSaleId() {
         return saleId;
     }
 

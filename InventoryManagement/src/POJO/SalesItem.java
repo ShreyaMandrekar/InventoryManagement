@@ -8,8 +8,36 @@ public class SalesItem {
     private int quantity;
     private double price;
     private double lineTotal;
+    
+    
 
-    public int getItemId() {
+    public SalesItem() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public SalesItem(int productId, int quantity, double price, double lineTotal) {
+		super();
+		this.productId = productId;
+		this.quantity = quantity;
+		this.price = price;
+		this.lineTotal = lineTotal;
+	}
+
+    
+	public SalesItem(int itemId, int saleId, int productId, int quantity, double price, double lineTotal) {
+		super();
+		this.itemId = itemId;
+		this.saleId = saleId;
+		this.productId = productId;
+		this.quantity = quantity;
+		this.price = price;
+		this.lineTotal = lineTotal;
+	}
+
+
+	public int getItemId() {
         return itemId;
     }
 

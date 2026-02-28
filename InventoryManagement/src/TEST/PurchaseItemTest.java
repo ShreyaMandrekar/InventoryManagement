@@ -24,7 +24,7 @@ public class PurchaseItemTest {
 	          
 	            System.out.print("Enter your choice: ");
 	            choice = sc.nextInt();
-	            sc.nextLine(); // consume newline
+	            sc.nextLine(); 
 
 	  switch (choice)          
 	       {

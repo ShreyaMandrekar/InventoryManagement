@@ -28,7 +28,7 @@ public class SalesTest {
 	            System.out.println("9. Exit");
 	            System.out.print("Enter your choice: ");
 	            choice = sc.nextInt();
-	            sc.nextLine(); // consume newline
+	            sc.nextLine(); 
 
 	            switch (choice) {
 	                case 1:
@@ -36,11 +36,11 @@ public class SalesTest {
 	                    Sales sale = new Sales();
 	                    List<SalesItem> items = new ArrayList<>();
 
-	                    // Get customer name
+	                    
 	                    System.out.println("Enter customer name:");
 	                    sale.setCustomerName(sc.nextLine());
 
-	                    // Get number of items
+	                   
 	                    System.out.println("Enter number of items:");
 	                    int numItems = sc.nextInt();
 
@@ -56,7 +56,7 @@ public class SalesTest {
 	                        items.add(item);
 	                    }
 
-	                    // Call DAO to create sale
+	                    
 	                    SalesDaoImpl dao = new SalesDaoImpl();
 	                    boolean result = dao.createSale(sale, items);
 	                    

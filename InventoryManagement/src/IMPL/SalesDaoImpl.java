@@ -33,7 +33,7 @@ public class SalesDaoImpl implements SalesDao{
 
 	        try {
 	            con = DBUtility.getconnection();
-	            con.setAutoCommit(false); // start transaction
+	            con.setAutoCommit(false); 
 
 	            String checkStock = "SELECT quantity FROM product WHERE productId = ?";
 
@@ -41,7 +41,7 @@ public class SalesDaoImpl implements SalesDao{
 
 	            for (SalesItem item : items) {
 	            	
-	            	 // 🛑 REJECT INVALID QUANTITY HERE
+	            	
 	                if (item.getQuantity() <= 0) {
 	                    throw new SQLException(
 	                        "Invalid quantity for productId " + item.getProductId() + 
@@ -68,7 +68,7 @@ public class SalesDaoImpl implements SalesDao{
 	            
 	            double totalAmount = 0;
 
-	            // Fetch prices and calculate line totals
+	           
 	            psPrice = con.prepareStatement(selectPrice);
 	            for (SalesItem item : items) {
 	                psPrice.setInt(1, item.getProductId());
@@ -86,7 +86,7 @@ public class SalesDaoImpl implements SalesDao{
 
 	            sale.setTotalAmount(totalAmount);
 
-	            // Insert into sales table
+	        
 	            psSale = con.prepareStatement(insertSale, PreparedStatement.RETURN_GENERATED_KEYS);
 	            psSale.setString(1, sale.getCustomerName());
 	            psSale.setDouble(2, sale.getTotalAmount());
@@ -102,7 +102,6 @@ public class SalesDaoImpl implements SalesDao{
 	                throw new SQLException("Creating sale failed, no ID obtained.");
 	            }
 
-	            // Insert sale items and update product stock
 	            psItem = con.prepareStatement(insertItem, PreparedStatement.RETURN_GENERATED_KEYS);
 	            psStock = con.prepareStatement(updateStock);
 
@@ -116,7 +115,7 @@ public class SalesDaoImpl implements SalesDao{
 	                psItem.setDouble(5, item.getLineTotal());
 	                psItem.executeUpdate();
 
-	                // Fetch the auto-generated item ID
+	               
 	                ResultSet rsItem = psItem.getGeneratedKeys();
 	                if (rsItem.next()) {
 	                    item.setItemId(rsItem.getInt(1));
@@ -127,7 +126,7 @@ public class SalesDaoImpl implements SalesDao{
 	                psStock.setInt(2, item.getProductId());
 	                psStock.executeUpdate();
 	                
-	             // 🔥 Add OUT transaction into stock_transactions
+	            
 	                String insertStockSQL =
 	                    "INSERT INTO stock_transactions(productId, supplierId, quantity, type, remarks) " +
 	                    "VALUES (?, NULL, ?, 'OUT', ?)";
@@ -181,7 +180,7 @@ public class SalesDaoImpl implements SalesDao{
 		    try {
 		        con = DBUtility.getconnection();
 
-		        // Fetch sale info
+		       
 		        psSale = con.prepareStatement(selectSale);
 		        psSale.setInt(1, saleId);
 		        rsSale = psSale.executeQuery();
@@ -193,7 +192,7 @@ public class SalesDaoImpl implements SalesDao{
 		            sale.setSaleDate(rsSale.getTimestamp("saleDate"));
 		            sale.setTotalAmount(rsSale.getDouble("totalAmount"));
 
-		            // Fetch sale items
+		          
 		            psItems = con.prepareStatement(selectItems);
 		            psItems.setInt(1, saleId);
 		            rsItems = psItems.executeQuery();
@@ -210,9 +209,7 @@ public class SalesDaoImpl implements SalesDao{
 		                items.add(item);
 		            }
 
-		            // Optional: print items in DAO or return them with sale
-		            // For now we can attach them to a method like getSaleItems(saleId) if needed
-		            // Or you can return sale object and fetch items separately in test
+		           
 		            System.out.println("Sale Items:");
 		            for (SalesItem si : items) {
 		                System.out.println(si);
@@ -322,7 +319,7 @@ public class SalesDaoImpl implements SalesDao{
 	        rs = ps.executeQuery();
 
 	        if (rs.next()) {
-	            return rs.getDouble("revenue");  // SUM result
+	            return rs.getDouble("revenue");  
 	        }
 
 	    } catch (SQLException e) {
@@ -354,7 +351,7 @@ public class SalesDaoImpl implements SalesDao{
 	        con = DBUtility.getconnection();
 	        con.setAutoCommit(false);
 
-	        // 1️⃣ Fetch OLD quantity
+	        
 	        String getOldQty =
 	            "SELECT quantity FROM sale_items WHERE saleId = ? AND productId = ?";
 	        psGetOld = con.prepareStatement(getOldQty);
@@ -368,14 +365,14 @@ public class SalesDaoImpl implements SalesDao{
 
 	        int oldQty = rs.getInt("quantity");
 
-	        // 2️⃣ Calculate difference
+	        
 	        int diff = newQty - oldQty;
 
 	        if (diff == 0) {
-	            return true; // nothing to change
+	            return true; 
 	        }
 
-	        // 3️⃣ Check stock if quantity increased
+	       
 	        if (diff > 0) {
 	            String checkStock =
 	                "SELECT quantity FROM product WHERE productId = ?";
@@ -390,7 +387,7 @@ public class SalesDaoImpl implements SalesDao{
 	            psCheck.close();
 	        }
 
-	        // 4️⃣ Update sale_items
+	   
 	        String updateItem =
 	            "UPDATE sale_items SET quantity = ?, lineTotal = price * ? " +
 	            "WHERE saleId = ? AND productId = ?";
@@ -401,7 +398,6 @@ public class SalesDaoImpl implements SalesDao{
 	        psUpdateItem.setInt(4, productId);
 	        psUpdateItem.executeUpdate();
 
-	        // 5️⃣ Update product stock
 	        String updateStock =
 	            "UPDATE product SET quantity = quantity - ? WHERE productId = ?";
 	        psUpdateStock = con.prepareStatement(updateStock);
@@ -409,7 +405,7 @@ public class SalesDaoImpl implements SalesDao{
 	        psUpdateStock.setInt(2, productId);
 	        psUpdateStock.executeUpdate();
 
-	        // 6️⃣ Insert stock transaction
+	     
 	        String txnType = diff > 0 ? "OUT" : "IN";
 	        int txnQty = Math.abs(diff);
 
@@ -460,9 +456,9 @@ public class SalesDaoImpl implements SalesDao{
 
 	    try {
 	        con = DBUtility.getconnection();
-	        con.setAutoCommit(false);  // start transaction
+	        con.setAutoCommit(false);  
 	        
-	     // 1️⃣ Fetch sale items
+	     
 	        String selectItems =
 	            "SELECT productId, quantity FROM sale_items WHERE saleId = ?";
 	        PreparedStatement psSelect = con.prepareStatement(selectItems);
@@ -483,12 +479,10 @@ public class SalesDaoImpl implements SalesDao{
 	            int productId = rs.getInt("productId");
 	            int qty = rs.getInt("quantity");
 
-	            // restore product stock
 	            psRestore.setInt(1, qty);
 	            psRestore.setInt(2, productId);
 	            psRestore.executeUpdate();
 
-	            // stock transaction entry
 	            psTrans.setInt(1, productId);
 	            psTrans.setInt(2, qty);
 	            psTrans.setString(3, "Sale Deleted ID: " + saleId);
@@ -496,12 +490,10 @@ public class SalesDaoImpl implements SalesDao{
 	        }
 
 
-	        // First delete child rows – sale_items
 	        psDeleteItems = con.prepareStatement(deleteItems);
 	        psDeleteItems.setInt(1, saleId);
 	        psDeleteItems.executeUpdate();
 
-	        // Then delete sale
 	        psDeleteSale = con.prepareStatement(deleteSale);
 	        psDeleteSale.setInt(1, saleId);
 	        int rows = psDeleteSale.executeUpdate();

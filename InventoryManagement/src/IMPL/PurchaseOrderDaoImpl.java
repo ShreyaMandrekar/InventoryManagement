@@ -142,7 +142,6 @@ public class PurchaseOrderDaoImpl implements PurchaseOrderDao {
 	    String updateProductSQL =
 	        "UPDATE product SET quantity = quantity + ? WHERE productId = ?";
 
-	    // Stock transaction table columns: productId, supplierId, quantity, type, remarks
 	    String insertStockSQL =
 	        "INSERT INTO stock_transactions(productId, supplierId, quantity, type, remarks) " +
 	        "VALUES (?, ?, ?, ?, ?)";
@@ -168,17 +167,17 @@ public class PurchaseOrderDaoImpl implements PurchaseOrderDao {
 	            return false;
 	        }
 
-	        // 1️⃣ Update Purchase Order Status
+	       
 	        try (PreparedStatement ps = con.prepareStatement(updateStatusSQL)) {
 	            ps.setString(1, status);
 	            ps.setInt(2, purchaseId);
 	            ps.executeUpdate();
 	        }
 
-	        // 2️⃣ If COMPLETED -> Update Stock + Insert Stock Transaction
+	       
 	        if (status.equalsIgnoreCase("Completed")) {
 
-	            // Get Supplier ID from purchase_order
+	            
 	            String supplierSQL = "SELECT supplierId FROM purchase_order WHERE purchaseId = ?";
 	            int supplierId = 0;
 
@@ -190,7 +189,7 @@ public class PurchaseOrderDaoImpl implements PurchaseOrderDao {
 	                }
 	            }
 
-	            // Get purchase items
+	           
 	            try (PreparedStatement ps = con.prepareStatement(selectItemsSQL)) {
 	                ps.setInt(1, purchaseId);
 	                ResultSet rs = ps.executeQuery();
@@ -199,19 +198,19 @@ public class PurchaseOrderDaoImpl implements PurchaseOrderDao {
 	                    int productId = rs.getInt("productId");
 	                    int qty = rs.getInt("quantity");
 
-	                    // UPDATE product table stock
+	                   
 	                    try (PreparedStatement ups = con.prepareStatement(updateProductSQL)) {
 	                        ups.setInt(1, qty);
 	                        ups.setInt(2, productId);
 	                        ups.executeUpdate();
 	                    }
 
-	                    // INSERT transaction record
+	                   
 	                    try (PreparedStatement sts = con.prepareStatement(insertStockSQL)) {
 	                        sts.setInt(1, productId);
-	                        sts.setInt(2, supplierId);          // supplierId (foreign key)
-	                        sts.setInt(3, qty);                 // quantity added
-	                        sts.setString(4, "IN");             // type = IN (purchase)
+	                        sts.setInt(2, supplierId);         
+	                        sts.setInt(3, qty);               
+	                        sts.setString(4, "IN");             
 	                        sts.setString(5, "Purchase Order Completed"); 
 	                        sts.executeUpdate();
 	                    }

@@ -23,14 +23,14 @@ public class StockTest {
             System.out.println("2. Add Stock-OUT");
             System.out.println("3. Get Stock By Product");
             System.out.println("4. View All Stock Transactions");
-            System.out.println("5. View Low Stock Products");//Threshold means "show products whose quantity is lower than this number".
+            System.out.println("5. View Low Stock Products");
             System.out.println("6.Exit");
             System.out.print("Enter your choice: ");
             choice = sc.nextInt();
 
             switch(choice)
             {
-            case 1:   // ADD STOCK-IN
+            case 1:  
             {
                 System.out.println("Enter Product ID");
                 int productId = sc.nextInt();
@@ -65,7 +65,7 @@ public class StockTest {
             }
 
             
-            case 2:   // ADD STOCK-OUT
+            case 2:  
             {
                 System.out.println("Enter Product ID");
                 int productId = sc.nextInt();
@@ -94,7 +94,7 @@ public class StockTest {
                 break;
             }
             
-            case 3: // View Stock by Product
+            case 3: 
             {
                 System.out.println("Enter Product ID to view stock:");
                 int productId = sc.nextInt();

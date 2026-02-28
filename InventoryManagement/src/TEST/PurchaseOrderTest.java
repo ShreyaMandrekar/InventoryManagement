@@ -6,7 +6,7 @@ import java.util.Scanner;
 import IMPL.ProductDaoImpl;
 import IMPL.PurchaseItemDaoImpl;
 import IMPL.PurchaseOrderDaoImpl;
-import POJO.PurchaseItem;
+
 import POJO.PurchaseOrder;
 
 public class PurchaseOrderTest {
