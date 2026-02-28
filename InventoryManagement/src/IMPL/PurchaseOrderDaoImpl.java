@@ -161,6 +161,12 @@ public class PurchaseOrderDaoImpl implements PurchaseOrderDao {
 	            }
 	        }
 	        
+	        if (currentStatus.equals("")) {
+	            System.out.println("Purchase Order ID not found.");
+	            con.rollback();
+	            return false;
+	        }
+	        
 	        if (currentStatus.equalsIgnoreCase("Completed")) {
 	            System.out.println("Order already completed. Stock already updated.");
 	            con.rollback();
@@ -168,12 +174,18 @@ public class PurchaseOrderDaoImpl implements PurchaseOrderDao {
 	        }
 
 	       
+	        int rowsAffected;
 	        try (PreparedStatement ps = con.prepareStatement(updateStatusSQL)) {
 	            ps.setString(1, status);
 	            ps.setInt(2, purchaseId);
-	            ps.executeUpdate();
+	            rowsAffected = ps.executeUpdate();
 	        }
 
+	        if (rowsAffected == 0) {
+	            System.out.println("Status update failed.");
+	            con.rollback();
+	            return false;
+	        }
 	       
 	        if (status.equalsIgnoreCase("Completed")) {
 
